@@ -1,8 +1,41 @@
-#include "QcalculatoruUI.h"
+#include <QDebug>
+#include "QCalculatoruUI.h"
+
 
 QCalculatorUI::QCalculatorUI() : QWidget(NULL, Qt::WindowCloseButtonHint)
 {
 
+}
+
+void QCalculatorUI::OnClickButtonDown()
+{
+    QPushButton* pButton = (QPushButton*)sender();
+    if(NULL != pButton)
+    {
+        QString strClickText = pButton->text();
+        QString strEdit = m_edit->text();
+        if( strClickText == "<-")
+        {
+            if(strEdit.length() > 0)
+            {
+                strEdit.remove( strEdit.length() - 1, 1);
+            }
+        }
+        else if(strClickText == "C")
+        {
+            strEdit.clear();
+        }
+        else if(strClickText == "=")
+        {
+
+        }
+        else
+        {
+            strEdit += strClickText;
+        }
+        m_edit->setText(strEdit);
+        //qDebug() << pButton->text()<<endl;
+    }
 }
 
 QCalculatorUI *QCalculatorUI::NewInstance()
@@ -34,7 +67,7 @@ bool QCalculatorUI::Construct()
     {
          "7", "8", "9", "+", "(",
          "4", "5", "6", "-", ")",
-         "1", "2", "3", "*", "->",
+         "1", "2", "3", "*", "<-",
          "0", ".", "=", "/", "C"
      };
 
@@ -44,6 +77,7 @@ bool QCalculatorUI::Construct()
         m_edit->resize(240, 30);
         m_edit->move(10, 10);
         m_edit->setReadOnly(true);
+        m_edit->setAlignment(Qt::AlignRight);
     }
     else
     {
@@ -60,6 +94,7 @@ bool QCalculatorUI::Construct()
                 m_button[ i * 5 + j]->resize(40, 40);
                 m_button[ i * 5 + j]->move( 10 + (10 + 40) * j, 50 + (10 + 40) * i);
                 m_button[ i * 5 + j]->setText(chButtonText[i* 5 + j]);
+                connect( m_button[ i * 5 +j],SIGNAL(clicked()), this, SLOT(OnClickButtonDown()) );
             }
             else
             {
