@@ -13,8 +13,14 @@ QCalculatorDec::~QCalculatorDec()
 
 }
 
-QString QCalculatorDec::Expression(const QString &str)
+QString QCalculatorDec::GetResult()
 {
+    return m_strResult;
+}
+
+bool QCalculatorDec::Expression(QString str)
+{
+    bool bRes = false;
     QString strRes = "error";
     QQueue< QString > queSplit;
     QQueue< QString > queTransfom;
@@ -23,9 +29,16 @@ QString QCalculatorDec::Expression(const QString &str)
     {
         strRes = Calculator(queTransfom);
     }
-
-    return strRes;
-
+    else
+    {
+        strRes = "error";
+    }
+    bRes = (strRes != "Error");
+    if(bRes)
+    {
+        m_strResult = strRes;
+    }
+    return bRes;
 }
 
 QString QCalculatorDec::Calculator(const QQueue<QString> &strInput)

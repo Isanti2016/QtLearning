@@ -4,16 +4,17 @@
 #include <QString>
 #include <QQueue>
 #include <QStack>
+#include "Interface.h"
 
-class QCalculatorDec
+class QCalculatorDec : public CInterface
 {
 public:
     QCalculatorDec();
     ~QCalculatorDec();
-    QString Expression(const QString& str);
-
+    bool Expression(QString str);
+    QString GetResult();
 private:
-
+    QString m_strResult;
     QString Calculator(const QQueue<QString>& strInput);
     QString Operator(const QString& strL, const QString& op, const QString& strr);
     bool Transform(const QQueue<QString>& qEqu, QQueue<QString>& qRes );

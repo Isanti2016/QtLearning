@@ -4,7 +4,7 @@
 
 QCalculatorUI::QCalculatorUI() : QWidget(NULL, Qt::WindowCloseButtonHint)
 {
-
+    m_Calculator = NULL;
 }
 
 void QCalculatorUI::OnClickButtonDown()
@@ -27,14 +27,19 @@ void QCalculatorUI::OnClickButtonDown()
         }
         else if(strClickText == "=")
         {
-
+            if(NULL != m_Calculator)
+            {
+                if(m_Calculator->Expression(strEdit))
+                {
+                    strEdit = m_Calculator->GetResult();
+                }
+            }
         }
         else
         {
             strEdit += strClickText;
         }
         m_edit->setText(strEdit);
-        //qDebug() << pButton->text()<<endl;
     }
 }
 
@@ -58,6 +63,16 @@ void QCalculatorUI::Show()
 {
     QWidget::show();
     setFixedSize(width(),height()); //多平台问题，要做窗口显示后，才能得到高，宽
+}
+
+void QCalculatorUI::SetCalculator(CInterface *pInterface)
+{
+    m_Calculator = pInterface;
+}
+
+CInterface *QCalculatorUI::GetCalculator()
+{
+    return m_Calculator;
 }
 
 bool QCalculatorUI::Construct()
