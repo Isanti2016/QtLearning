@@ -7,14 +7,17 @@
 #include <QToolBar>
 #include <QLabel>
 #include <QPlainTextEdit>
+#include <QFileDialog>
+#include <QString>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 private:
-    QPlainTextEdit objMainEditor;
-    QLabel objStatusLabel;
+    QPlainTextEdit m_objMainEditor;
+    QLabel m_objStatusLabel;
+    QString m_strPath;
 
     MainWindow();
     MainWindow(const MainWindow&);
@@ -39,6 +42,14 @@ private:
 
     bool makeAction(QAction*& pAction, QWidget* pParent, QString text, int key);
     bool makeAction(QAction*& pAction, QWidget* pParent, QString strTip, QString strIconPath);
+
+    QString showFileDialog(QFileDialog::AcceptMode OpenMode,  QString strTitle);
+    void showErrorMessage(QString strMessage);
+
+private slots:
+    void OnFileOpen();
+    void OnFileSave();
+    void OnFileSavaAs();
 
 public:
     static MainWindow* NewInstance();

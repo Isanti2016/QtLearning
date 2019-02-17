@@ -66,15 +66,15 @@ bool MainWindow::initStatusBar()
 
     if(NULL != pLabel)
     {
-       objStatusLabel.setMinimumWidth(80);
-       objStatusLabel.setAlignment(Qt::AlignCenter);
-       objStatusLabel.setText("Ln: 1    Col:1");
+       m_objStatusLabel.setMinimumWidth(80);
+       m_objStatusLabel.setAlignment(Qt::AlignCenter);
+       m_objStatusLabel.setText("Ln: 1    Col:1");
 
        pLabel->setMinimumWidth(80);
        pLabel->setAlignment(Qt::AlignCenter);
        pLabel->setText("W.bb");
 
-       pSb->addPermanentWidget(&objStatusLabel);
+       pSb->addPermanentWidget(&m_objStatusLabel);
        pSb->addPermanentWidget(pLabel);
 
     }
@@ -89,9 +89,9 @@ bool MainWindow::initStatusBar()
 bool MainWindow::initMainEditor()
 {
     bool bRes = true;
-    objMainEditor.setParent(this);
+    m_objMainEditor.setParent(this);
 
-    setCentralWidget(&objMainEditor);
+    setCentralWidget(&m_objMainEditor);
     return bRes;
 }
 
@@ -119,6 +119,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         if(bRes)
         {
             pMenu->addAction(pAction);
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnFileOpen()) );
         }
         pMenu->addSeparator();
 
@@ -126,6 +127,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         if(bRes)
         {
             pMenu->addAction(pAction);
+            connect( pAction, SIGNAL(triggered()), this, SLOT(OnFileSave()) );
         }
         pMenu->addSeparator();
 
@@ -133,6 +135,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         if(bRes)
         {
             pMenu->addAction(pAction);
+            connect( pAction, SIGNAL(triggered()), this, SLOT(OnFileSavaAs()) );
         }
         pMenu->addSeparator();
 
@@ -369,18 +372,21 @@ bool MainWindow::initFileToolItem(QToolBar *pTb)
     if(bRes)
     {
         pTb->addAction(pAction);
+        connect(pAction, SIGNAL(triggered()), this, SLOT(OnFileOpen()) );
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Save", ":/Res/pic/save.png");
     if(bRes)
     {
         pTb->addAction(pAction);
+        connect( pAction, SIGNAL(triggered()), this, SLOT(OnFileSave()) );
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Save As", ":/Res/pic/saveas.png");
     if(bRes)
     {
         pTb->addAction(pAction);
+        connect( pAction, SIGNAL(triggered()), this, SLOT(OnFileSavaAs()) );
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Print", ":/Res/pic/print.png");
