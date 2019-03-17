@@ -18,6 +18,7 @@ private:
     QPlainTextEdit m_objMainEditor;
     QLabel m_objStatusLabel;
     QString m_strPath;
+    bool m_isTextChanged;
 
     MainWindow();
     MainWindow(const MainWindow&);
@@ -45,11 +46,31 @@ private:
 
     QString showFileDialog(QFileDialog::AcceptMode OpenMode,  QString strTitle);
     void showErrorMessage(QString strMessage);
+    int  showQueryMessage(QString strMessage);
+    QString saveCurrentData(QString strPath = "");
+    void preEditChange();
+    void openFileToEditor(QString strPath);
+    QAction* findMenuBarAction(QString strAction);
+    QAction* findToolBarAction(QString strAction);
+
+protected:
+    void closeEvent(QCloseEvent* event);
+    void dragEnterEvent(QDragEnterEvent* e);    //托
+    void dropEvent(QDropEvent* e);              //放
 
 private slots:
     void OnFileOpen();
     void OnFileSave();
     void OnFileSavaAs();
+    void OnFileNew();
+    void OnTextChanged();
+    void OnFilePrinter();
+    void OnCursorPositionChange();
+
+    void OnCopyAvailable(bool bAvailable);
+    void OnUndoAvailable(bool bAvailable);
+    void OnRedoAvailable(bool bAvailable);
+
 
 public:
     static MainWindow* NewInstance();

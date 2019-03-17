@@ -1,14 +1,25 @@
 #include "Widget.h"
-#include "ui_Widget.h"
+#include <QDebug>
 
-Widget::Widget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Widget)
+void OnMyButttonMouseRelease(QObject* sender, QMouseEvent* e)
 {
-    ui->setupUi(this);
+    qDebug()<<"OnMyButttonMouseRelease(QObject* sender, QMouseEvent* e)";
+}
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent), m_myButton(this, OnMyButttonMouseRelease)
+{
+    m_myButton.setText("QMyPushButton");
+    connect(&m_myButton, SIGNAL(clicked()), this, SLOT(OnMyButtonClicked()));
 }
 
 Widget::~Widget()
 {
-    delete ui;
+
 }
+
+void Widget::OnMyButtonClicked()
+{
+    qDebug()<< "Widget::OnMyButtonClicked()";
+}
+

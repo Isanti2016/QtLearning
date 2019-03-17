@@ -2,6 +2,9 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QObject>
+#include <QEvent>
+#include "MyLineEdit.h"
 
 namespace Ui {
 class Widget;
@@ -11,12 +14,15 @@ class Widget : public QWidget
 {
     Q_OBJECT
 
+    CMyLineEdit m_MyLineEdit;
+
 public:
-    explicit Widget(QWidget *parent = 0);
+    Widget(QWidget* parent = 0);
     ~Widget();
 
-private:
-    Ui::Widget *ui;
+    bool event(QEvent* e);
+    void keyPressEvent(QKeyEvent* e);
+    bool eventFilter(QObject* obj, QEvent* e);
 };
 
 #endif // WIDGET_H

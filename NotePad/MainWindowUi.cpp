@@ -5,9 +5,14 @@
 
 
 
-MainWindow::MainWindow()
+MainWindow::MainWindow():
+    m_strPath(""), m_isTextChanged(false)
 {
+    setWindowTitle("NotePad - [ New ]");
+    m_strPath = "";
+    m_isTextChanged = false;
 
+    setAcceptDrops(true);   //支持拖放
 }
 
 bool MainWindow::construct()
@@ -91,6 +96,15 @@ bool MainWindow::initMainEditor()
     bool bRes = true;
     m_objMainEditor.setParent(this);
 
+    connect(&m_objMainEditor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));              //状态改变
+
+    connect(&m_objMainEditor, SIGNAL(copyAvailable(bool)), this, SLOT(OnCopyAvailable(bool)));  //复制
+    connect(&m_objMainEditor, SIGNAL(undoAvailable(bool)), this, SLOT(OnUndoAvailable(bool)));  //重做
+    connect(&m_objMainEditor, SIGNAL(redoAvailable(bool)), this, SLOT(OnRedoAvailable(bool)));  //撤销
+
+    connect(&m_objMainEditor, SIGNAL(cursorPositionChanged()), this, SLOT(OnCursorPositionChange())); //光标
+
+
     setCentralWidget(&m_objMainEditor);
     return bRes;
 }
@@ -112,6 +126,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         if(bRes)
         {
             pMenu->addAction(pAction);
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnFileNew()) );
         }
         pMenu->addSeparator();
 
@@ -142,6 +157,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Print(&P)", Qt::CTRL + Qt::Key_P);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), this, SLOT(OnFilePrinter()));
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -177,6 +193,8 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Undo(&U)", Qt::CTRL + Qt::Key_U);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(undo()) );
+            pAction->setEnabled(false);
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -184,6 +202,8 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Redo(&R)", Qt::CTRL + Qt::Key_R);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(redo()) );
+            pAction->setEnabled(false);
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -191,6 +211,8 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Cut(&T)", Qt::CTRL + Qt::Key_T);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(cut()) );
+            pAction->setEnabled(false);
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -198,6 +220,8 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Copy(&C)", Qt::CTRL + Qt::Key_C);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(copy()) );
+            pAction->setEnabled(false);
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -205,6 +229,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Paste(&P)", Qt::CTRL + Qt::Key_P);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(paste()) );
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -240,6 +265,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Select All(&A)", Qt::CTRL + Qt::Key_A);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(selectAll()) );
             pMenu->addAction(pAction);
         }
     }
@@ -258,7 +284,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
 
 bool MainWindow::initFormatMenu(QMenuBar *pMb)
 {
-    QMenu* pMenu = new QMenu("Format(&F)");
+    QMenu* pMenu = new QMenu("Format(&O)");
 
     bool bRes = true;
     if(NULL != pMenu)
@@ -366,6 +392,7 @@ bool MainWindow::initFileToolItem(QToolBar *pTb)
     if(bRes)
     {
         pTb->addAction(pAction);
+        connect(pAction, SIGNAL(triggered()), this, SLOT(OnFileNew()) );
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Open", ":/Res/pic/open.png");
@@ -392,6 +419,7 @@ bool MainWindow::initFileToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Print", ":/Res/pic/print.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), this, SLOT(OnFilePrinter()));
         pTb->addAction(pAction);
     }
 
@@ -405,30 +433,39 @@ bool MainWindow::initEditorToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Undo", ":/Res/pic/undo.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(undo()) );
+        pAction->setEnabled(false);
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Redo", ":/Res/pic/redo.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(redo()) );
+        pAction->setEnabled(false);
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Cut", ":/Res/pic/cut.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(cut()) );
+        pAction->setEnabled(false);
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Copy", ":/Res/pic/copy.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(copy()) );
+        pAction->setEnabled(false);
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Paste", ":/Res/pic/paste.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), &m_objMainEditor, SLOT(paste()) );
         pTb->addAction(pAction);
     }
 
@@ -494,6 +531,7 @@ bool MainWindow::initViewToolItem(QToolBar *pTb)
     return bRes;
 }
 
+//创建菜单动作
 bool MainWindow::makeAction(QAction* &pAction, QWidget* pParent, QString text, int key)
 {
     bool bRes = true;
@@ -512,14 +550,16 @@ bool MainWindow::makeAction(QAction* &pAction, QWidget* pParent, QString text, i
     return bRes;
 }
 
+//创建工具栏动作
 bool MainWindow::makeAction(QAction *&pAction, QWidget* pParent, QString strTip, QString strIconPath)
 {
     bool bRes = true;
 
-    pAction = new QAction("",pParent);
+    pAction = new QAction("", pParent);
 
     if(NULL != pAction)
     {
+        //设置图标名称
         pAction->setToolTip(strTip);
         pAction->setIcon(QIcon(strIconPath));
     }

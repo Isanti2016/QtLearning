@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[5];
-    char stringdata0[47];
+    QByteArrayData data[13];
+    char stringdata0[167];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,11 +35,22 @@ QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
 QT_MOC_LITERAL(1, 11, 10), // "OnFileOpen"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 10), // "OnFileSave"
-QT_MOC_LITERAL(4, 34, 12) // "OnFileSavaAs"
+QT_MOC_LITERAL(4, 34, 12), // "OnFileSavaAs"
+QT_MOC_LITERAL(5, 47, 9), // "OnFileNew"
+QT_MOC_LITERAL(6, 57, 13), // "OnTextChanged"
+QT_MOC_LITERAL(7, 71, 13), // "OnFilePrinter"
+QT_MOC_LITERAL(8, 85, 22), // "OnCursorPositionChange"
+QT_MOC_LITERAL(9, 108, 15), // "OnCopyAvailable"
+QT_MOC_LITERAL(10, 124, 10), // "bAvailable"
+QT_MOC_LITERAL(11, 135, 15), // "OnUndoAvailable"
+QT_MOC_LITERAL(12, 151, 15) // "OnRedoAvailable"
 
     },
     "MainWindow\0OnFileOpen\0\0OnFileSave\0"
-    "OnFileSavaAs"
+    "OnFileSavaAs\0OnFileNew\0OnTextChanged\0"
+    "OnFilePrinter\0OnCursorPositionChange\0"
+    "OnCopyAvailable\0bAvailable\0OnUndoAvailable\0"
+    "OnRedoAvailable"
 };
 #undef QT_MOC_LITERAL
 
@@ -49,7 +60,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -57,14 +68,28 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   29,    2, 0x08 /* Private */,
-       3,    0,   30,    2, 0x08 /* Private */,
-       4,    0,   31,    2, 0x08 /* Private */,
+       1,    0,   64,    2, 0x08 /* Private */,
+       3,    0,   65,    2, 0x08 /* Private */,
+       4,    0,   66,    2, 0x08 /* Private */,
+       5,    0,   67,    2, 0x08 /* Private */,
+       6,    0,   68,    2, 0x08 /* Private */,
+       7,    0,   69,    2, 0x08 /* Private */,
+       8,    0,   70,    2, 0x08 /* Private */,
+       9,    1,   71,    2, 0x08 /* Private */,
+      11,    1,   74,    2, 0x08 /* Private */,
+      12,    1,   77,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void, QMetaType::Bool,   10,
 
        0        // eod
 };
@@ -78,10 +103,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->OnFileOpen(); break;
         case 1: _t->OnFileSave(); break;
         case 2: _t->OnFileSavaAs(); break;
+        case 3: _t->OnFileNew(); break;
+        case 4: _t->OnTextChanged(); break;
+        case 5: _t->OnFilePrinter(); break;
+        case 6: _t->OnCursorPositionChange(); break;
+        case 7: _t->OnCopyAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 8: _t->OnUndoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 9: _t->OnRedoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 QT_INIT_METAOBJECT const QMetaObject MainWindow::staticMetaObject = {
@@ -109,13 +140,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 10;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 10)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 10;
     }
     return _id;
 }
