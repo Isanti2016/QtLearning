@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include <QString>
-#include <QDebug>
 #include <QStringList>
 #include <QFile>
 #include <QMessageBox>
@@ -17,6 +16,9 @@
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrinter>
 #include <QTextCursor>
+#include <QKeyEvent>
+#include <QApplication>
+#include <QDebug>
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode OpenMode,  QString strTitle)
 {
@@ -426,4 +428,25 @@ void MainWindow::OnCursorPositionChange()
 
     m_objStatusLabel.setText("Ln: " + QString::number(Row + 1) +"    Col: " + QString::number(Col + 1));
 
+}
+
+//使用QApplication中的sendEvent发送消息
+void MainWindow::OnEditDelete()
+{
+    QKeyEvent evtPress(QEvent::KeyPress, Qt::Key_Delete, Qt::NoModifier);
+    QKeyEvent evtRelease(QEvent::KeyRelease, Qt::Key_Delete, Qt::NoModifier);
+
+    QApplication::sendEvent(&m_objMainEditor, &evtPress);
+    QApplication::sendEvent(&m_objMainEditor, &evtRelease);
+
+}
+
+void MainWindow::OnFileExit()
+{
+    close();
+}
+
+void MainWindow::OnEditFind()
+{
+    m_pFindDlg->show();
 }

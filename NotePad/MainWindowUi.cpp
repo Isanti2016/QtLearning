@@ -1,11 +1,11 @@
 #include "MainWindow.h"
 #include <QMenu>
 #include <QStatusBar>
-
-
+#include <QPalette>
 
 
 MainWindow::MainWindow():
+    m_pFindDlg(new FindDialog(this, &m_objMainEditor)),
     m_strPath(""), m_isTextChanged(false)
 {
     setWindowTitle("NotePad - [ New ]");
@@ -95,6 +95,11 @@ bool MainWindow::initMainEditor()
 {
     bool bRes = true;
     m_objMainEditor.setParent(this);
+    //设置非激活态，字体高亮颜色
+    QPalette ptColor = m_objMainEditor.palette();
+    ptColor.setColor(QPalette::Inactive, QPalette::Highlight, ptColor.color(QPalette::Active, QPalette::Highlight));
+    ptColor.setColor(QPalette::Inactive, QPalette::HighlightedText, ptColor.color(QPalette::Active, QPalette::HighlightedText));
+    m_objMainEditor.setPalette(ptColor);
 
     connect(&m_objMainEditor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));              //状态改变
 
@@ -165,6 +170,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Exit(X)", Qt::CTRL + Qt::Key_X);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnFileExit()));
             pMenu->addAction(pAction);
         }
     }
@@ -237,6 +243,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Delete(&D)", Qt::CTRL + Qt::Key_D);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnEditDelete()));
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -244,6 +251,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Find(&F)", Qt::CTRL + Qt::Key_F);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnEditFind()) );
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
