@@ -6,7 +6,9 @@
 
 MainWindow::MainWindow():
     m_pFindDlg(new FindDialog(this, &m_objMainEditor)),
-    m_strPath(""), m_isTextChanged(false)
+    m_strPath(""),
+    m_isTextChanged(false),
+    m_pReplaceDlg(new ReplaceDialog(this, &m_objMainEditor))
 {
     setWindowTitle("NotePad - [ New ]");
     m_strPath = "";
@@ -248,7 +250,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         }
         pMenu->addSeparator();
 
-        bRes = bRes && makeAction(pAction, pMb, "Find(&F)", Qt::CTRL + Qt::Key_F);
+        bRes = bRes && makeAction(pAction, pMb, "Find(&F)...", Qt::CTRL + Qt::Key_F);
         if(bRes)
         {
             connect(pAction, SIGNAL(triggered()), this, SLOT(OnEditFind()) );
@@ -259,6 +261,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Replace(&R)...", Qt::CTRL + Qt::Key_R);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnEditReplace()));
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -306,7 +309,7 @@ bool MainWindow::initFormatMenu(QMenuBar *pMb)
         }
         pMenu->addSeparator();
 
-        bRes = bRes && makeAction(pAction, pMb, "Font(&F)...", Qt::CTRL + Qt::Key_F);
+        bRes = bRes && makeAction(pAction, pMb, "Font(&F)...", Qt::CTRL+ Qt::SHIFT + Qt::Key_F );
         if(bRes)
         {
             pMenu->addAction(pAction);
@@ -480,12 +483,14 @@ bool MainWindow::initEditorToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Find", ":/Res/pic/find.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), this, SLOT(OnEditFind()));
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Replace", ":/Res/pic/replace.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered()), this, SLOT(OnEditReplace()));
         pTb->addAction(pAction);
     }
 

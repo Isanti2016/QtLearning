@@ -450,3 +450,8 @@ void MainWindow::OnEditFind()
 {
     m_pFindDlg->show();
 }
+
+void MainWindow::OnEditReplace()
+{
+    m_pReplaceDlg->show();
+}

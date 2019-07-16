@@ -28,11 +28,13 @@ SOURCES += \
         main.cpp \
     MainWindowUi.cpp \
     MainWindowSlot.cpp \
-    FindDialog.cpp
+    FindDialog.cpp \
+    ReplaceDialog.cpp
 
 HEADERS += \
     MainWindow.h \
-    FindDialog.h
+    FindDialog.h \
+    ReplaceDialog.h
 
 FORMS += \
         mainwindow.ui
