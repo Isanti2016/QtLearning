@@ -18,7 +18,13 @@
 #include <QTextCursor>
 #include <QKeyEvent>
 #include <QApplication>
+#include <QInputDialog>
+#include <QStatusBar>
+#include <QFontDialog>
+#include <QDesktopServices>
 #include <QDebug>
+#include "AboutDialog.h"
+
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode OpenMode,  QString strTitle)
 {
@@ -162,7 +168,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if(!m_isTextChanged)
     {
-        MainWindow::closeEvent(event);
+        QMainWindow::closeEvent(event);
     }
     else
     {
@@ -283,7 +289,7 @@ QAction* MainWindow::findMenuBarAction(QString strAction)
         QMenu* objMenu = dynamic_cast<QMenu*>(menuList.at(i));
         if(NULL != objMenu)
         {
-            const QList<QAction*>& actList = objMenu->actions(); //menu中保护Action的列表
+            QList<QAction*> actList = objMenu->actions(); //menu中保护Action的列表
             for(int j = 0; j < actList.count(); ++j)
             {
                 if( actList[j]->text().startsWith(strAction, Qt::CaseInsensitive) )
@@ -309,7 +315,7 @@ QAction* MainWindow::findToolBarAction(QString strAction)
         QToolBar* pToolBar = dynamic_cast<QToolBar*>(toolList.at(i));
         if(NULL != pToolBar)
         {
-            QList<QAction*> actList = pToolBar->actions();
+            const QList<QAction*>& actList = pToolBar->actions();
 
             for(int j = 0; j < actList.count(); ++j)
             {
@@ -386,6 +392,140 @@ void MainWindow::OnRedoAvailable(bool bAvailable)
     {
         pAction->setEnabled(bAvailable);
     }
+}
+
+void MainWindow::OnEditGoto()
+{
+    bool ok = false;
+    int iMax = m_objMainEditor.document()->lineCount();
+    int iLine = QInputDialog::getInt(this, "Goto", "Line", 1, 1, iMax, 1, &ok );
+
+    if( ok )
+    {
+        QString     strText = m_objMainEditor.toPlainText();
+        QTextCursor curPos  = m_objMainEditor.textCursor();
+
+        int pos = 0;
+        int next = -1;
+
+        for( int i = 0; i < iLine; ++i )
+        {
+            pos = next + 1;
+            next = strText.indexOf("\n", pos);
+        }
+        curPos.setPosition(pos);
+        m_objMainEditor.setTextCursor(curPos);
+    }
+}
+
+void MainWindow::OnViewToolBar()
+{
+    const QObjectList list = children();
+    int count = list.count();
+    for( int i = 0; i < count; ++i )
+    {
+        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
+        if(tb != NULL)
+        {
+            bool bIsVisible = tb->isVisible();
+            tb->setVisible(!bIsVisible);
+
+            QAction* actMenuBar = findMenuBarAction("Tool Bar");
+            if( actMenuBar != NULL )
+            {
+                actMenuBar->setChecked(!bIsVisible);
+            }
+
+            QAction* actToolBar = findToolBarAction("Tool Bar");
+            if( actToolBar != NULL )
+            {
+                actToolBar->setChecked(!bIsVisible);
+            }
+
+            break;
+        }
+    }
+}
+
+void MainWindow::OnViewStatusBar()
+{
+    QStatusBar* sb = statusBar();
+    bool bIsvisible = sb->isVisible();
+    
+    sb->setVisible(!bIsvisible);
+    
+    QAction* actMenuBar = findMenuBarAction("Status Bar");
+    if( actMenuBar != NULL )
+    {
+        actMenuBar->setChecked(!bIsvisible);
+    }
+
+    QAction* actToolBar = findToolBarAction("Status Bar");
+    if( actToolBar != NULL )
+    {
+        actToolBar->setChecked(!bIsvisible);
+    }
+
+}
+
+void MainWindow::OnFormatFont()
+{
+    bool isOk = false;
+    QFont font = QFontDialog::getFont( &isOk, m_objMainEditor.font(), this );
+
+    if( isOk )
+    {
+        m_objMainEditor.setFont( font );
+    }
+
+}
+
+void MainWindow::OnFormatWrap()
+{
+    QPlainTextEdit::LineWrapMode mode = m_objMainEditor.lineWrapMode();
+
+    if( mode == QPlainTextEdit::NoWrap )
+    {
+        m_objMainEditor.setLineWrapMode( QPlainTextEdit::WidgetWidth );
+
+        QAction* actMenuBar = findMenuBarAction("Auto Wrap");
+        if( actMenuBar != NULL )
+        {
+            actMenuBar->setChecked(true);
+        }
+
+        QAction* actToolBar = findToolBarAction("Auto Wrap");
+        if( actToolBar != NULL )
+        {
+            actToolBar->setChecked(true);
+        }
+    }
+    else
+    {
+        m_objMainEditor.setLineWrapMode( QPlainTextEdit::NoWrap );
+        QAction* actMenuBar = findMenuBarAction("Auto Wrap");
+        if( actMenuBar != NULL )
+        {
+            actMenuBar->setChecked(false);
+        }
+
+        QAction* actToolBar = findToolBarAction("Auto Wrap");
+        if( actToolBar != NULL )
+        {
+            actToolBar->setChecked(false);
+        }
+    }
+}
+
+void MainWindow::OnHelpManual()
+{
+    //打开本地文件，使用格式“ file:///... ”
+    QDesktopServices::openUrl( QUrl("file:///G:/C++/Qtlearning/NotePad/Help_Manual.txt") );
+}
+
+void MainWindow::OnHelpAbout()
+{
+    CAboutDialog(/*this*/).exec();
 }
 
 //处理打印功能

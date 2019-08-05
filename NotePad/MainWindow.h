@@ -80,6 +80,15 @@ private slots:
     void OnUndoAvailable(bool bAvailable);
     void OnRedoAvailable(bool bAvailable);
 
+    void OnEditGoto();
+    void OnViewToolBar();
+    void OnViewStatusBar();
+
+    void OnFormatFont();
+    void OnFormatWrap();
+    void OnHelpManual();
+
+    void OnHelpAbout();
 
 public:
     static MainWindow* NewInstance();

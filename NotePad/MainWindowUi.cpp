@@ -119,7 +119,7 @@ bool MainWindow::initMainEditor()
 bool MainWindow::initFileMenu(QMenuBar *pMb)
 {
     bool bRes = false;
-    QMenu* pMenu = new QMenu("File(&F)");
+    QMenu* pMenu = new QMenu("File(&F)", pMb);
     if(NULL == pMenu)
     {
         return bRes;
@@ -191,7 +191,7 @@ bool MainWindow::initFileMenu(QMenuBar *pMb)
 
 bool MainWindow::initEditMenu(QMenuBar *pMb)
 {
-    QMenu* pMenu = new QMenu("Edit(&E)");
+    QMenu* pMenu = new QMenu("Edit(&E)", pMb);
 
     bool bRes = true;
     if(NULL != pMenu)
@@ -269,6 +269,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
         bRes  = bRes && makeAction(pAction, pMb, "Goto(&G)...", Qt::CTRL + Qt::Key_G);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered(bool)), this, SLOT(OnEditGoto()) );
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -295,7 +296,7 @@ bool MainWindow::initEditMenu(QMenuBar *pMb)
 
 bool MainWindow::initFormatMenu(QMenuBar *pMb)
 {
-    QMenu* pMenu = new QMenu("Format(&O)");
+    QMenu* pMenu = new QMenu("Format(&O)", pMb);
 
     bool bRes = true;
     if(NULL != pMenu)
@@ -305,6 +306,9 @@ bool MainWindow::initFormatMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Auto Wrap(&W)", Qt::CTRL + Qt::Key_W);
         if(bRes)
         {
+            pAction->setCheckable( true );
+            pAction->setChecked( true );
+            connect( pAction, SIGNAL(triggered(bool)), this, SLOT(OnFormatWrap()) );
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -312,6 +316,7 @@ bool MainWindow::initFormatMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "Font(&F)...", Qt::CTRL+ Qt::SHIFT + Qt::Key_F );
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered(bool)), this, SLOT(OnFormatFont()) );
             pMenu->addAction(pAction);
         }
 
@@ -331,16 +336,28 @@ bool MainWindow::initFormatMenu(QMenuBar *pMb)
 
 bool MainWindow::initViewMenu(QMenuBar *pMb)
 {
-    QMenu* pMenu = new QMenu("View(&V)");
+    QMenu* pMenu = new QMenu("View(&V)", pMb);
 
     bool bRes = true;
     if(NULL != pMenu)
     {
         QAction* pAction = NULL;
 
-        bRes = bRes && makeAction(pAction, pMb, "Tool Bar(&T)", Qt::CTRL + Qt::Key_O);
+        bRes = bRes && makeAction(pAction, pMb, "Tool Bar(&T)", Qt::CTRL + Qt::SHIFT + Qt::Key_T);
         if(bRes)
         {
+            pAction->setCheckable(true);
+            pAction->setChecked(true);
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnViewToolBar()));
+            pMenu->addAction(pAction);
+        }
+
+        bRes = bRes && makeAction(pAction, pMb, "Status Bar(&S)", Qt::CTRL + Qt::SHIFT + Qt::Key_S);
+        if( bRes )
+        {
+            pAction->setCheckable(true);
+            pAction->setChecked(true);
+            connect(pAction, SIGNAL(triggered()), this, SLOT(OnViewStatusBar()));
             pMenu->addAction(pAction);
         }
 
@@ -360,7 +377,7 @@ bool MainWindow::initViewMenu(QMenuBar *pMb)
 
 bool MainWindow::initHelpMenu(QMenuBar *pMb)
 {
-    QMenu* pMenu = new QMenu("Help(&H)");
+    QMenu* pMenu = new QMenu("Help(&H)", pMb);
 
     bool bRes = true;
     if(NULL != pMenu)
@@ -370,6 +387,7 @@ bool MainWindow::initHelpMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "User Manual(&U)", Qt::CTRL + Qt::Key_U);
         if(bRes)
         {
+            connect( pAction, SIGNAL(triggered(bool)), this, SLOT(OnHelpManual()) );
             pMenu->addAction(pAction);
         }
         pMenu->addSeparator();
@@ -377,6 +395,7 @@ bool MainWindow::initHelpMenu(QMenuBar *pMb)
         bRes = bRes && makeAction(pAction, pMb, "About NotePad...", 0);
         if(bRes)
         {
+            connect(pAction, SIGNAL(triggered(bool)), this, SLOT(OnHelpAbout()));
             pMenu->addAction(pAction);
         }
 
@@ -497,6 +516,7 @@ bool MainWindow::initEditorToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Goto", ":/Res/pic/goto.png");
     if(bRes)
     {
+        connect(pAction, SIGNAL(triggered(bool)), this, SLOT(OnEditGoto()) );
         pTb->addAction(pAction);
     }
 
@@ -511,12 +531,16 @@ bool MainWindow::initFormatToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Auto Wrap", ":/Res/pic/wrap.png");
     if(bRes)
     {
+        pAction->setCheckable( true );
+        pAction->setChecked( true );
+        connect( pAction, SIGNAL(triggered(bool)), this, SLOT(OnFormatWrap()) );
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Font", ":/Res/pic/font.png");
     if(bRes)
     {
+        connect( pAction, SIGNAL(triggered(bool)), this, SLOT(OnFormatFont()) );
         pTb->addAction(pAction);
     }
 
@@ -531,12 +555,18 @@ bool MainWindow::initViewToolItem(QToolBar *pTb)
     bRes = bRes && makeAction(pAction, pTb, "Tool Bar", ":/Res/pic/tool.png");
     if(bRes)
     {
+        pAction->setCheckable(true);
+        pAction->setChecked(true);
+        connect(pAction, SIGNAL(triggered()), this, SLOT(OnViewToolBar()));
         pTb->addAction(pAction);
     }
 
     bRes = bRes && makeAction(pAction, pTb, "Status Bar", ":/Res/pic/status.png");
     if(bRes)
     {
+        pAction->setCheckable(true);
+        pAction->setChecked(true);
+        connect(pAction, SIGNAL(triggered()), this, SLOT(OnViewStatusBar()));
         pTb->addAction(pAction);
     }
 

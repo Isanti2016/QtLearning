@@ -10,5 +10,6 @@ int main(int argc, char *argv[])
     {
         pMainWindow->show();
     }
+
     return a.exec();
 }

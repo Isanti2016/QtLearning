@@ -5,5 +5,6 @@ build-Llayout-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-NotePad-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-QDialoggTest-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-MultipleTest-Desktop_Qt_5_11_1_MinGW_32bit-Debug
+build-NotePad-Desktop_Qt_5_11_1_MinGW_32bit-Release
 *.user
 
