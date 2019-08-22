@@ -1,3 +1,4 @@
+#忽略以下文件
 build-Calculate-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-Course38-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-Course39-Desktop_Qt_5_11_1_MinGW_32bit-Debug
@@ -6,6 +7,9 @@ build-NotePad-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-QDialoggTest-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-MultipleTest-Desktop_Qt_5_11_1_MinGW_32bit-Debug
 build-NotePad-Desktop_Qt_5_11_1_MinGW_32bit-Release
-build-*
+#忽略以下文件，使用通用匹配法
+build-**-Debug
+build-**-Release
+build-**-Profile
 *.user
 
