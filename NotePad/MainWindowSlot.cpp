@@ -24,6 +24,7 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include "AboutDialog.h"
+#include "AppConfig.h"
 
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode OpenMode,  QString strTitle)
@@ -168,6 +169,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if(!m_isTextChanged)
     {
+        //保持参数
+        StoreCfg();
         QMainWindow::closeEvent(event);
     }
     else
@@ -226,6 +229,18 @@ void MainWindow::OnFileOpen()
         openFileToEditor(strPath);
     }
 }
+
+void MainWindow::OnCmdFileOpen(QString strPath)
+{
+    //处理文件改变
+    preEditChange();
+
+    if(!m_isTextChanged)
+    {
+        openFileToEditor(strPath);
+    }
+}
+
 
 void MainWindow::OnFileSave()
 {
@@ -308,27 +323,46 @@ QAction* MainWindow::findMenuBarAction(QString strAction)
 QAction* MainWindow::findToolBarAction(QString strAction)
 {
     QAction* pAction = NULL;
-
-    const QObjectList& toolList = children();
-    for(int i = 0; i < toolList.count(); ++i)
+    QToolBar* pToolBar = ToolBar();
+    if(NULL != pToolBar)
     {
-        QToolBar* pToolBar = dynamic_cast<QToolBar*>(toolList.at(i));
-        if(NULL != pToolBar)
-        {
-            const QList<QAction*>& actList = pToolBar->actions();
+        const QList<QAction*>& actList = pToolBar->actions();
 
-            for(int j = 0; j < actList.count(); ++j)
+        for(int j = 0; j < actList.count(); ++j)
+        {
+            if( actList[j]->toolTip().startsWith(strAction, Qt::CaseInsensitive) )
             {
-                if( actList[j]->toolTip().startsWith(strAction, Qt::CaseInsensitive) )
-                {
-                    pAction = actList[j];
-                    break;
-                }
+                pAction = actList[j];
+                break;
             }
         }
     }
-
     return pAction;
+}
+
+void MainWindow::StoreCfg()
+{
+    QFont objFont = m_objMainEditor.font();
+    bool isWrap = (m_objMainEditor.lineWrapMode() == QPlainTextEdit::WidgetWidth) ? true : false;
+
+    bool isToolBarVisible = false;
+    QToolBar* pToolBar = ToolBar();
+    if( NULL != pToolBar )
+    {
+        isToolBarVisible = pToolBar->isVisible();
+    }
+
+    bool isStatusBarVisible = false;
+    QStatusBar* pStatusBar = statusBar();
+    if( NULL != pStatusBar )
+    {
+        isStatusBarVisible = pStatusBar->isVisible();
+    }
+
+    QRect objRect = geometry();
+
+    CAppConfig objCfg(objFont, isWrap, isToolBarVisible, isStatusBarVisible, objRect);
+    objCfg.StoreCfg();
 }
 
 //根据QPlainTextEdit提供的信号，设置对应的按钮状态
@@ -420,29 +454,22 @@ void MainWindow::OnEditGoto()
 
 void MainWindow::OnViewToolBar()
 {
-    const QObjectList list = children();
-    int count = list.count();
-    for( int i = 0; i < count; ++i )
+    QToolBar* tb = ToolBar();
+    if(tb != NULL)
     {
-        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
-        if(tb != NULL)
+        bool bIsVisible = tb->isVisible();
+        tb->setVisible(!bIsVisible);
+
+        QAction* actMenuBar = findMenuBarAction("Tool Bar");
+        if( actMenuBar != NULL )
         {
-            bool bIsVisible = tb->isVisible();
-            tb->setVisible(!bIsVisible);
+            actMenuBar->setChecked(!bIsVisible);
+        }
 
-            QAction* actMenuBar = findMenuBarAction("Tool Bar");
-            if( actMenuBar != NULL )
-            {
-                actMenuBar->setChecked(!bIsVisible);
-            }
-
-            QAction* actToolBar = findToolBarAction("Tool Bar");
-            if( actToolBar != NULL )
-            {
-                actToolBar->setChecked(!bIsVisible);
-            }
-
-            break;
+        QAction* actToolBar = findToolBarAction("Tool Bar");
+        if( actToolBar != NULL )
+        {
+            actToolBar->setChecked(!bIsVisible);
         }
     }
 }
@@ -579,6 +606,23 @@ void MainWindow::OnEditDelete()
     QApplication::sendEvent(&m_objMainEditor, &evtPress);
     QApplication::sendEvent(&m_objMainEditor, &evtRelease);
 
+}
+
+QToolBar* MainWindow::ToolBar()
+{
+    QToolBar* objRes = NULL;
+    const QObjectList list = children();
+    int count = list.count();
+    for( int i = 0; i < count; ++i )
+    {
+        QToolBar* tb = dynamic_cast<QToolBar*>(list[i]);
+        if(tb != NULL)
+        {
+            objRes = tb;
+            break;
+        }
+    }
+    return objRes;
 }
 
 void MainWindow::OnFileExit()

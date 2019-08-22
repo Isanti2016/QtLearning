@@ -2,6 +2,7 @@
 #include <QMenu>
 #include <QStatusBar>
 #include <QPalette>
+#include "AppConfig.h"
 
 
 MainWindow::MainWindow():
@@ -26,6 +27,8 @@ bool MainWindow::construct()
     bRes = bRes && initStatusBar();
     bRes = bRes && initMainEditor();
 
+    //读取配置文件
+    ReadCfg();
 
     return bRes;
 }
@@ -614,6 +617,61 @@ bool MainWindow::makeAction(QAction *&pAction, QWidget* pParent, QString strTip,
 }
 
 
+void MainWindow::ReadCfg()
+{
+    CAppConfig objCfg;
+    if( objCfg.IsValid() )
+    {
+        m_objMainEditor.setFont( objCfg.EditFont() );
+
+        m_objMainEditor.setLineWrapMode( objCfg.IsAutoWrap() ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap );
+        QAction* pMenuAct = findMenuBarAction("Auto Wrap");
+        if( NULL != pMenuAct )
+        {
+            pMenuAct->setChecked( objCfg.IsAutoWrap() );
+        }
+        QAction* pToolAct = findToolBarAction("Auto Wrap");
+        if( NULL != pToolAct )
+        {
+            pToolAct->setChecked( objCfg.IsAutoWrap() );
+        }
+
+        QToolBar* pToolBar = ToolBar();
+        if( pToolBar != NULL )
+        {
+            pToolBar->setVisible( objCfg.IsToolBarVisible() );
+        }
+        pMenuAct = findMenuBarAction("Tool Bar");
+        if( NULL != pMenuAct )
+        {
+            pMenuAct->setChecked( objCfg.IsToolBarVisible() );
+        }
+        pToolAct = findToolBarAction("Tool Bar");
+        if( NULL != pToolAct )
+        {
+            pToolAct->setChecked( objCfg.IsToolBarVisible() );
+        }
+
+        QStatusBar* pStatusBar = statusBar();
+        if( pStatusBar != NULL )
+        {
+            pStatusBar->setVisible( objCfg.IsStatusBarVisible() );
+        }
+        pMenuAct = findMenuBarAction("Status Bar");
+        if( NULL != pMenuAct )
+        {
+            pMenuAct->setChecked( objCfg.IsStatusBarVisible() );
+        }
+        pToolAct = findToolBarAction("Status Bar");
+        if( NULL != pToolAct )
+        {
+            pToolAct->setChecked( objCfg.IsStatusBarVisible() );
+        }
+
+        setGeometry( objCfg.AppRect() );
+    }
+
+}
 
 MainWindow *MainWindow::NewInstance()
 {

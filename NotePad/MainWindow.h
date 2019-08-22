@@ -58,6 +58,10 @@ private:
     QAction* findMenuBarAction(QString strAction);
     QAction* findToolBarAction(QString strAction);
 
+    void StoreCfg();
+    void ReadCfg();
+    QToolBar* ToolBar();
+
 protected:
     void closeEvent(QCloseEvent* event);
     void dragEnterEvent(QDragEnterEvent* e);    //托
@@ -92,6 +96,7 @@ private slots:
 
 public:
     static MainWindow* NewInstance();
+    void OnCmdFileOpen( QString strPath );
     ~MainWindow();
 };
 

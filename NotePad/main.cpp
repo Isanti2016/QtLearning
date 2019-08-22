@@ -1,15 +1,32 @@
 #include "MainWindow.h"
 #include <QApplication>
+#include <QFileInfo>
+
+void ApplyCmdPara( int argc, char *argv[], MainWindow* pMainWindow )
+{
+    if(argc > 1)
+    {
+        QFileInfo objFileInfo( argv[1] );
+        if( objFileInfo.exists() )
+        {
+            pMainWindow->OnCmdFileOpen( objFileInfo.absoluteFilePath() );
+        }
+    }
+}
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow* pMainWindow = MainWindow::NewInstance();
-    pMainWindow->setMinimumSize(600, 400);
+    int iRet = -1;
     if(NULL != pMainWindow)
     {
-        pMainWindow->show();
-    }
+        ApplyCmdPara(argc, argv, pMainWindow);
 
-    return a.exec();
+        pMainWindow->show();
+
+        iRet = a.exec();
+    }
+    delete pMainWindow;
+    return iRet;
 }

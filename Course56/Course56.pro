@@ -1,16 +1,14 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-01-10T23:14:22
+# Project created by QtCreator 2019-08-18T11:59:21
 #
 #-------------------------------------------------
 
 QT       += core gui
-RC_ICONS = NotePadPro.ico
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-                                  QT += printsupport
 
-TARGET = NotePad
+TARGET = Course56
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -27,24 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    MainWindowUi.cpp \
-    MainWindowSlot.cpp \
-    FindDialog.cpp \
-    ReplaceDialog.cpp \
-    AboutDialog.cpp \
-    AppConfig.cpp
+        Widget.cpp
 
 HEADERS += \
-    MainWindow.h \
-    FindDialog.h \
-    ReplaceDialog.h \
-    AboutDialog.h \
-    AppConfig.h
-
-FORMS += \
-        mainwindow.ui
-
-RESOURCES += \
-    res.qrc
-
-
+        Widgett.h
