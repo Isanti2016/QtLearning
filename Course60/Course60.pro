@@ -25,7 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        Widget.cpp
+        Widget.cpp \
+    ScoreInfo.cpp \
+    DataSource.cpp \
+    Scoreinfomodel.cpp
 
 HEADERS += \
-        Widget.h
+        Widget.h \
+    ScoreInfo.h \
+    DataSource.h \
+    Scoreinfomodel.h

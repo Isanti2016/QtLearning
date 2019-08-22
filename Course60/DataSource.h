@@ -2,6 +2,8 @@
 #define DATASOURCE_H
 
 #include <QObject>
+#include <QList>
+#include "ScoreInfo.h"
 
 class DataSource : public QObject
 {
@@ -9,9 +11,15 @@ class DataSource : public QObject
 public:
     explicit DataSource(QObject *parent = nullptr);
 
-signals:
+    bool SetPath(QString strPath);
+    int count();
+    QList<ScoreInfo> fetchData();
 
-public slots:
+private:
+    QList<ScoreInfo> m_data;
+
+    bool Parase(QString strLine, ScoreInfo& Info);
+
 };
 
 #endif // DATASOURCE_H
