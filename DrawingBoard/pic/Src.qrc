@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/Src">
+        <file>new.png</file>
+        <file>open.png</file>
+        <file>save.png</file>
+        <file>tool.png</file>
+        <file>Color.png</file>
+        <file>Ellipse.png</file>
+        <file>Free.png</file>
+        <file>Line.png</file>
+        <file>Rect.png</file>
+        <file>RoundedRect.png</file>
+        <file>clear.png</file>
+        <file>capture.png</file>
+    </qresource>
+</RCC>
