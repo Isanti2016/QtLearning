@@ -300,10 +300,6 @@ void MainWindow::OnSave()
         {
            m_pMap.save( filename );
         }
-        else
-        {
-            this->sa
-        }
     }
 
 }
